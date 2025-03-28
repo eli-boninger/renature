@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { withKnobs, number } from '@storybook/addon-knobs';
 
 import { useGravityGroup } from '../src';
 
@@ -10,10 +9,15 @@ import './index.css';
 
 export default {
   title: 'GravityMultiple',
-  decorators: [withKnobs],
 };
 
-export const GravityMultipleBasic: FC = () => {
+interface Config {
+  moverMass: number;
+  attractorMass: number;
+  r: number;
+}
+
+export const GravityMultipleBasic = ({ moverMass, attractorMass, r }: Config) => {
   const [nodes] = useGravityGroup(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -26,9 +30,9 @@ export const GravityMultipleBasic: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 7.5),
+      moverMass,
+      attractorMass,
+      r,
     },
     delay: i * 500,
     repeat: Infinity,
@@ -43,7 +47,13 @@ export const GravityMultipleBasic: FC = () => {
   );
 };
 
-export const GravityMultipleEventBased: FC = () => {
+GravityMultipleBasic.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 7.5
+}
+
+export const GravityMultipleEventBased = ({ moverMass, attractorMass, r }: Config) => {
   const [nodes, controller] = useGravityGroup(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -56,9 +66,9 @@ export const GravityMultipleEventBased: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 7.5),
+      moverMass,
+      attractorMass,
+      r,
     },
     pause: true,
     delay: i * 1000,
@@ -78,3 +88,9 @@ export const GravityMultipleEventBased: FC = () => {
     </div>
   );
 };
+
+GravityMultipleEventBased.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 7.5
+}

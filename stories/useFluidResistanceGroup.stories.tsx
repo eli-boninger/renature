@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import { withKnobs, number, boolean } from '@storybook/addon-knobs';
 
 import { useFluidResistanceGroup } from '../src';
 
@@ -10,10 +9,17 @@ import './index.css';
 
 export default {
   title: 'FluidResistanceMultiple',
-  decorators: [withKnobs],
 };
 
-export const FluidResistanceMultipleBasic: FC = () => {
+interface Config {
+  mass: number;
+  rho: number;
+  area: number;
+  cDrag: number;
+  settle: boolean;
+}
+
+export const FluidResistanceMultipleBasic = ({ mass, rho, area, cDrag, settle }: Config) => {
   const [nodes] = useFluidResistanceGroup<HTMLDivElement>(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -26,11 +32,11 @@ export const FluidResistanceMultipleBasic: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      mass: number('mass', 20),
-      rho: number('rho', 20),
-      area: number('area', 20),
-      cDrag: number('cDrag', 0.1),
-      settle: boolean('settle', true),
+      mass,
+      rho,
+      area,
+      cDrag,
+      settle,
     },
     delay: i * 500,
     repeat: Infinity,
@@ -45,7 +51,15 @@ export const FluidResistanceMultipleBasic: FC = () => {
   );
 };
 
-export const FluidResistanceMultipleEventBased: FC = () => {
+FluidResistanceMultipleBasic.args = {
+  mass: 20,
+  rho: 20,
+  area: 20,
+  cDrag: 0.1,
+  settle: true
+}
+
+export const FluidResistanceMultipleEventBased = ({ mass, rho, area, cDrag, settle }: Config) => {
   const [nodes, controller] = useFluidResistanceGroup(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -58,11 +72,11 @@ export const FluidResistanceMultipleEventBased: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      mass: number('mass', 25),
-      rho: number('rho', 10),
-      area: number('area', 20),
-      cDrag: number('cDrag', 0.25),
-      settle: boolean('settle', true),
+      mass,
+      rho,
+      area,
+      cDrag,
+      settle,
     },
     pause: true,
     delay: i * 1000,
@@ -82,3 +96,11 @@ export const FluidResistanceMultipleEventBased: FC = () => {
     </div>
   );
 };
+
+FluidResistanceMultipleEventBased.args = {
+  mass: 25,
+  rho: 10,
+  area: 20,
+  cDrag: 0.25,
+  settle: true
+}

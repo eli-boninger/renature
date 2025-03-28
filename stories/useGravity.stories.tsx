@@ -1,5 +1,4 @@
 import React, { useState, FC } from 'react';
-import { withKnobs, number, select } from '@storybook/addon-knobs';
 
 import { useGravity } from '../src';
 
@@ -10,24 +9,36 @@ import './index.css';
 
 export default {
   title: 'Gravity',
-  decorators: [withKnobs],
 };
 
-export const GravityBasic: FC = () => {
+interface Config {
+  moverMass: number;
+  attractorMass: number;
+  r: number;
+  repeatType: 'mirror' | 'loop';
+}
+
+export const GravityBasic = ({ moverMass, attractorMass, r }: Config) => {
   const [props] = useGravity<HTMLDivElement>({
     from: { opacity: 0 },
     to: { opacity: 1 },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 10),
+      moverMass,
+      attractorMass,
+      r,
     },
   });
 
   return <div className="mover mover--purple" {...props} />;
 };
 
-export const GravityControlled: FC = () => {
+GravityBasic.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 10
+}
+
+export const GravityControlled = ({ moverMass, attractorMass, r }: Config) => {
   const [toggle, setToggle] = useState<boolean>(true);
 
   const [props] = useGravity<HTMLDivElement>({
@@ -40,9 +51,9 @@ export const GravityControlled: FC = () => {
       transform: toggle ? 'scale(1) rotate(180deg)' : 'scale(0) rotate(0deg)',
     },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 10),
+      moverMass,
+      attractorMass,
+      r,
     },
   });
 
@@ -59,14 +70,20 @@ export const GravityControlled: FC = () => {
   );
 };
 
-export const GravityEventBased: FC = () => {
+GravityControlled.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 10
+}
+
+export const GravityEventBased = ({ moverMass, attractorMass, r }: Config) => {
   const [props, controller] = useGravity<HTMLDivElement>({
     from: { transform: 'skewY(0deg)' },
     to: { transform: 'skewY(30deg)' },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 7.5),
+      moverMass,
+      attractorMass,
+      r,
     },
     pause: true,
     repeat: Infinity,
@@ -83,7 +100,13 @@ export const GravityEventBased: FC = () => {
   );
 };
 
-export const GravityDelay: FC = () => {
+GravityEventBased.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 7.5
+}
+
+export const GravityDelay = ({ moverMass, attractorMass, r }: Config) => {
   const [props] = useGravity<HTMLDivElement>({
     from: {
       background: '#f25050',
@@ -94,9 +117,9 @@ export const GravityDelay: FC = () => {
       transform: 'scale(1.5) rotate(720deg)',
     },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 7.5),
+      moverMass,
+      attractorMass,
+      r,
     },
     delay: 2000,
   });
@@ -104,7 +127,13 @@ export const GravityDelay: FC = () => {
   return <div className="mover mover--red" {...props} />;
 };
 
-export const GravityInfinite: FC = () => {
+GravityDelay.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 7.5
+}
+
+export const GravityInfinite = ({ moverMass, attractorMass, r, repeatType }: Config) => {
   const [props] = useGravity<HTMLDivElement>({
     from: {
       background: '#f25050',
@@ -115,13 +144,20 @@ export const GravityInfinite: FC = () => {
       transform: 'scale(1.5) rotate(720deg)',
     },
     config: {
-      moverMass: number('moverMass', 10000),
-      attractorMass: number('attractorMass', 1000000000000),
-      r: number('r', 7.5),
+      moverMass,
+      attractorMass,
+      r,
     },
     repeat: Infinity,
-    repeatType: select('repeatType', ['mirror', 'loop'], 'mirror'),
+    repeatType,
   });
 
   return <div className="mover mover--purple" {...props} />;
 };
+
+GravityInfinite.args = {
+  moverMass: 10000,
+  attractorMass: 1000000000000,
+  r: 7.5,
+  repeatType: 'mirror'
+}

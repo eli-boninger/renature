@@ -3,9 +3,7 @@ import React, {
   useLayoutEffect,
   useEffect,
   useState,
-  FC,
 } from 'react';
-import { withKnobs, number } from '@storybook/addon-knobs';
 
 import { useFrictionGroup } from '../src';
 
@@ -16,10 +14,15 @@ import './index.css';
 
 export default {
   title: 'FrictionGroup',
-  decorators: [withKnobs],
 };
 
-export const FrictionGroupBasic: FC = () => {
+interface Config {
+  mu: number;
+  mass: number;
+  initialVelocity: number;
+}
+
+export const FrictionGroupBasic = ({ mu, mass, initialVelocity }: Config) => {
   const [nodes] = useFrictionGroup(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -32,9 +35,9 @@ export const FrictionGroupBasic: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     delay: i * 500,
     repeat: Infinity,
@@ -49,7 +52,13 @@ export const FrictionGroupBasic: FC = () => {
   );
 };
 
-export const FrictionGroupEventBased: FC = () => {
+FrictionGroupBasic.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}
+
+export const FrictionGroupEventBased = ({ mu, mass, initialVelocity }: Config) => {
   const [nodes, controller] = useFrictionGroup<HTMLDivElement>(5, (i) => ({
     from: {
       transform: 'translateY(0px)',
@@ -62,9 +71,9 @@ export const FrictionGroupEventBased: FC = () => {
       borderRadius: `${Math.floor(Math.random() * 100)}%`,
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     pause: true,
     delay: i * 1000,
@@ -85,7 +94,13 @@ export const FrictionGroupEventBased: FC = () => {
   );
 };
 
-export const FrictionGroupSVG: FC = () => {
+FrictionGroupEventBased.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}
+
+export const FrictionGroupSVG = ({ mu, mass, initialVelocity }: Config) => {
   const [pathLengths, setPathLengths] = useState<{
     inner: number;
     outer: number;
@@ -143,9 +158,9 @@ export const FrictionGroupSVG: FC = () => {
     to: {
       strokeDashoffset: getPathLengthForIndex(i),
     },
-    mu: number('mu', 0.25),
-    mass: number('mass', 300),
-    initialVelocity: number('velocity', 10),
+    mu,
+    mass,
+    initialVelocity,
     repeat: Infinity,
   }));
 
@@ -185,11 +200,17 @@ export const FrictionGroupSVG: FC = () => {
   );
 };
 
+FrictionGroupBasic.args = {
+  mu: 0.25,
+  mass: 300,
+  initialVelocity: 10
+}
+
 const RENATURE = 'RENATURE';
 const translateDirection = () => (Math.random() > 0.5 ? 1 : -1);
 const translateMagnitude = () => Math.floor(Math.random() * 200);
 
-export const FrictionGroupSet: FC = () => {
+export const FrictionGroupSet = () => {
   const [nodes, controller] = useFrictionGroup(RENATURE.length, (i) => ({
     from: {
       opacity: 0,
@@ -207,9 +228,8 @@ export const FrictionGroupSet: FC = () => {
       nodes.forEach((_, i) => {
         const translate =
           count % 2 === 0
-            ? `translate(${translateMagnitude() * translateDirection()}px, ${
-                translateMagnitude() * translateDirection()
-              }px)`
+            ? `translate(${translateMagnitude() * translateDirection()}px, ${translateMagnitude() * translateDirection()
+            }px)`
             : `translate(0px, 0px)`;
 
         controller.set({ transform: translate }, i);

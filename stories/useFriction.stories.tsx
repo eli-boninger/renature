@@ -1,5 +1,4 @@
 import React, { useLayoutEffect, useRef, useState, FC, useEffect } from 'react';
-import { withKnobs, number, select } from '@storybook/addon-knobs';
 
 import { useFriction } from '../src';
 
@@ -10,10 +9,16 @@ import './index.css';
 
 export default {
   title: 'Friction',
-  decorators: [withKnobs],
 };
 
-export const FrictionBasic: FC = () => {
+interface Config {
+  mu: number;
+  mass: number;
+  initialVelocity: number;
+  repeatType?: 'mirror' | 'loop';
+}
+
+export const FrictionBasic = ({ mu, mass, initialVelocity }: Config) => {
   const [props] = useFriction<HTMLDivElement>({
     from: {
       opacity: 0,
@@ -22,16 +27,22 @@ export const FrictionBasic: FC = () => {
       opacity: 1,
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
   });
 
   return <div className="mover mover--purple" {...props} />;
 };
 
-export const FrictionControlled: FC = () => {
+FrictionBasic.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}
+
+export const FrictionControlled = ({ mu, mass, initialVelocity }: Config) => {
   const [toggle, setToggle] = useState(true);
 
   const [props] = useFriction<HTMLDivElement>({
@@ -44,9 +55,9 @@ export const FrictionControlled: FC = () => {
       transform: toggle ? 'scale(1) rotate(180deg)' : 'scale(0) rotate(0deg)',
     },
     config: {
-      mu: number('mu', 0.25),
-      mass: number('mass', 50),
-      initialVelocity: number('initialVelocity', 5),
+      mu,
+      mass,
+      initialVelocity,
     },
   });
 
@@ -63,14 +74,20 @@ export const FrictionControlled: FC = () => {
   );
 };
 
-export const FrictionEventBased: FC = () => {
+FrictionControlled.args = {
+  mu: 0.25,
+  mass: 50,
+  initialVelocity: 5
+}
+
+export const FrictionEventBased = ({ mu, mass, initialVelocity }: Config) => {
   const [props, controller] = useFriction<HTMLDivElement>({
     from: { transform: 'skewY(0deg)' },
     to: { transform: 'skewY(30deg)' },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     pause: true,
     repeat: Infinity,
@@ -87,7 +104,13 @@ export const FrictionEventBased: FC = () => {
   );
 };
 
-export const FrictionDelay: FC = () => {
+FrictionEventBased.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}
+
+export const FrictionDelay = ({ mu, mass, initialVelocity }: Config) => {
   const [props] = useFriction<HTMLDivElement>({
     from: {
       background: '#f25050',
@@ -98,9 +121,9 @@ export const FrictionDelay: FC = () => {
       transform: 'scale(1.5) rotate(720deg)',
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     delay: 2000,
   });
@@ -108,7 +131,13 @@ export const FrictionDelay: FC = () => {
   return <div className="mover mover--red" {...props} />;
 };
 
-export const FrictionInfinite: FC = () => {
+FrictionDelay.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}
+
+export const FrictionInfinite = ({ mu, mass, initialVelocity, repeatType }: Config) => {
   const [props] = useFriction<HTMLDivElement>({
     from: {
       background: '#f25050',
@@ -127,18 +156,25 @@ export const FrictionInfinite: FC = () => {
       },
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     repeat: Infinity,
-    repeatType: select('repeatType', ['mirror', 'loop'], 'mirror'),
+    repeatType,
   });
 
   return <div className="mover mover--red" {...props} />;
 };
 
-export const FrictionSVG: FC = () => {
+FrictionInfinite.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10,
+  repeatType: 'mirror'
+}
+
+export const FrictionSVG = ({ mu, mass, initialVelocity }: Config) => {
   const [pathLength, setPathLength] = useState<number>(0);
 
   useLayoutEffect(() => {
@@ -157,9 +193,9 @@ export const FrictionSVG: FC = () => {
       strokeDashoffset: pathLength,
     },
     config: {
-      mu: number('mu', 0.25),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 5),
+      mu,
+      mass,
+      initialVelocity,
     },
     repeat: Infinity,
   });
@@ -185,7 +221,13 @@ export const FrictionSVG: FC = () => {
   );
 };
 
-export const FrictionProgress: FC = () => {
+FrictionSVG.args = {
+  mu: 0.25,
+  mass: 300,
+  initialVelocity: 5
+}
+
+export const FrictionProgress = ({ mu, mass, initialVelocity }: Config) => {
   const progressRef = useRef<HTMLSpanElement>(null);
 
   useFriction<HTMLDivElement>({
@@ -196,9 +238,9 @@ export const FrictionProgress: FC = () => {
       opacity: 1,
     },
     config: {
-      mu: number('mu', 0.1),
-      mass: number('mass', 30),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
     onFrame: (progress) => {
       if (progressRef.current) {
@@ -210,7 +252,13 @@ export const FrictionProgress: FC = () => {
   return <span ref={progressRef} style={{ fontSize: '2rem' }} />;
 };
 
-export const FrictionSet: FC = () => {
+FrictionProgress.args = {
+  mu: 0.1,
+  mass: 30,
+  initialVelocity: 10
+}
+
+export const FrictionSet = ({ mu, mass, initialVelocity }: Config) => {
   const [props, controller] = useFriction<HTMLDivElement>({
     from: {
       opacity: 0,
@@ -219,20 +267,18 @@ export const FrictionSet: FC = () => {
       opacity: 1,
     },
     config: {
-      mu: number('mu', 0.5),
-      mass: number('mass', 300),
-      initialVelocity: number('velocity', 10),
+      mu,
+      mass,
+      initialVelocity,
     },
   });
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       controller.set({
-        transform: `translate(${
-          Math.floor(Math.random() * 300) * (Math.random() > 0.5 ? 1 : -1)
-        }px, ${
-          Math.floor(Math.random() * 300) * (Math.random() > 0.5 ? 1 : -1)
-        }px) rotate(${Math.random() * 360}deg) scale(${Math.random()})`,
+        transform: `translate(${Math.floor(Math.random() * 300) * (Math.random() > 0.5 ? 1 : -1)
+          }px, ${Math.floor(Math.random() * 300) * (Math.random() > 0.5 ? 1 : -1)
+          }px) rotate(${Math.random() * 360}deg) scale(${Math.random()})`,
         opacity: Math.random(),
       });
     }, 2000);
@@ -244,3 +290,9 @@ export const FrictionSet: FC = () => {
 
   return <div className="mover mover--magenta" {...props} />;
 };
+
+FrictionSet.args = {
+  mu: 0.5,
+  mass: 300,
+  initialVelocity: 10
+}

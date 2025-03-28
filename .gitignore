@@ -8,3 +8,6 @@ dist
 tmp
 artifacts
 coverage
+
+.npmrc
+doctor-storybook.log

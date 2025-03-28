@@ -1,15 +1,22 @@
 import React, { useState, useLayoutEffect, FC } from 'react';
-import { withKnobs, number } from '@storybook/addon-knobs';
 
 import { useGravity2D } from '../src';
 import './index.css';
 
 export default {
   title: 'Gravity2D',
-  decorators: [withKnobs],
 };
 
-export const Gravity2DBasic: FC = () => {
+interface Config {
+  attractorMass: number;
+  moverMass: number;
+  initialMoverVelocity: [number, number];
+  threshold: { min: number, max: number };
+  timeScale: number;
+  G?: number;
+}
+
+export const Gravity2DBasic = ({ attractorMass, moverMass, initialMoverVelocity, threshold, timeScale }: Config) => {
   const [center, setCenter] = useState<[number, number]>([0, 0]);
 
   useLayoutEffect(() => {
@@ -22,19 +29,13 @@ export const Gravity2DBasic: FC = () => {
 
   const [props] = useGravity2D({
     config: {
-      attractorMass: number('attractorMass', 1000000000000),
-      moverMass: number('moverMass', 10000),
+      attractorMass,
+      moverMass,
       attractorPosition: center,
       initialMoverPosition: [center[0], center[1] - 200],
-      initialMoverVelocity: [
-        number('initialMoverVelocityX', 1),
-        number('initialMoverVelocityY', 0),
-      ],
-      threshold: {
-        min: number('thresholdMin', 20),
-        max: number('thresholdMax', 100),
-      },
-      timeScale: number('timeScale', 100),
+      initialMoverVelocity,
+      threshold,
+      timeScale,
     },
   });
 
@@ -49,7 +50,15 @@ export const Gravity2DBasic: FC = () => {
   );
 };
 
-export const Gravity2DCustomG: FC = () => {
+Gravity2DBasic.args = {
+  attractorMass: 1000000000000,
+  moverMass: 10000,
+  initialMoverVelocity: [1, 0],
+  threshold: { min: 20, max: 100 },
+  timeScale: 100
+}
+
+export const Gravity2DCustomG = ({ attractorMass, moverMass, initialMoverVelocity, threshold, timeScale, G }: Config) => {
   const [center, setCenter] = useState<[number, number]>([0, 0]);
 
   useLayoutEffect(() => {
@@ -62,20 +71,14 @@ export const Gravity2DCustomG: FC = () => {
 
   const [props] = useGravity2D({
     config: {
-      attractorMass: number('attractorMass', 20),
-      moverMass: number('moverMass', 1),
+      attractorMass,
+      moverMass,
       attractorPosition: center,
       initialMoverPosition: [center[0] - 50, center[1]],
-      initialMoverVelocity: [
-        number('initialMoverVelocityX', 0),
-        number('initialMoverVelocityY', 2),
-      ],
-      threshold: {
-        min: number('thresholdMin', 10),
-        max: number('thresholdMax', 25),
-      },
-      timeScale: number('timeScale', 100),
-      G: number('G', 0.4),
+      initialMoverVelocity,
+      threshold,
+      timeScale,
+      G,
     },
   });
 
@@ -89,3 +92,12 @@ export const Gravity2DCustomG: FC = () => {
     </div>
   );
 };
+
+Gravity2DCustomG.args = {
+  attractorMass: 20,
+  moverMass: 1,
+  initialMoverVelocity: [0, 2],
+  threshold: { min: 10, max: 25 },
+  timeScale: 100,
+  G: 0.4
+}
